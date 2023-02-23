@@ -1,7 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentación de diapositivas minimalista</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #111;
+    }
+    #slideshow {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <img id="slideshow" alt="Presentación de diapositivas">
+  <script>
+    const apiKey = '3BRKAvMV4ZTGTdP01RkbUjRdaYFCcQBfIM_AP1zU00c';
+    const tema = 'Casa minimalista'; // Cambia esto por el tema que desees mostrar
+
+    fetch(`https://api.unsplash.com/photos/random?query=${tema}&count=10&client_id=${apiKey}`)
+      .then(response => response.json())
+      .then(data => {
+        const photos = data.map(photo => {
+          return {
+            id: photo.id,
+            url: photo.urls.regular,
+            alt: photo.alt_description
+          }
+        });
+
+        const slideshow = document.getElementById('slideshow');
+        let currentPhotoIndex = 0;
+
+        const changePhoto = () => {
+          const currentPhoto = photos[currentPhotoIndex];
+          slideshow.src = currentPhoto.url;
+          slideshow.alt = currentPhoto.alt;
+          currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+        }
+
+        setInterval(changePhoto, 10000);
+      });
+  </script>
 </body>
 </html>

@@ -17,13 +17,24 @@
       background-position: center;
       overflow: hidden;
     }
+    
+    /* La siguiente regla hace que la imagen ocupe el 100% del ancho y del alto de la ventana */
+    body > div {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
   </style>
 </head>
 <body>
+  <div></div> <!-- Este elemento se usará para mostrar la imagen de fondo -->
+
   <script>
     const apiKey = '3BRKAvMV4ZTGTdP01RkbUjRdaYFCcQBfIM_AP1zU00c';
     const tema = 'Experimental'; // Cambia esto por el tema que desees mostrar
-
     fetch(`https://api.unsplash.com/photos/random?query=${tema}&count=10&client_id=${apiKey}`)
       .then(response => response.json())
       .then(data => {
@@ -36,15 +47,27 @@
         });
 
         const body = document.querySelector('body');
+        const photoContainer = document.querySelector('body > div');
         let currentPhotoIndex = 0;
 
         const changePhoto = () => {
           const currentPhoto = photos[currentPhotoIndex];
-          body.style.backgroundImage = `url(${currentPhoto.url})`;
+          photoContainer.style.backgroundImage = `url(${currentPhoto.url})`;
           currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
         }
 
-        setInterval(changePhoto, 5000);
+        changePhoto();
+        setInterval(changePhoto, 10000);
+
+        // La siguiente función se ejecuta cada vez que se redimensiona la ventana
+        const adjustPhotoSize = () => {
+          const { width, height } = window.getComputedStyle(body);
+          photoContainer.style.width = width;
+          photoContainer.style.height = height;
+        }
+
+        adjustPhotoSize();
+        window.addEventListener('resize', adjustPhotoSize);
       });
   </script>
 </body>
